@@ -5,7 +5,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   sku                 = "Standard_DS1_v2"
   instances          = 1
   admin_username      = "adminuser"
-  admin_password="Chaku@123"
+  admin_password= "admin123"
   disable_password_authentication=false
 
    source_image_reference {

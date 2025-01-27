@@ -22,3 +22,12 @@ variable "vnetName" {
     type = string
     default = "MyVNET"
 }
+
+
+variable "adminUserName" {
+  type = string
+}
+
+variable "adminPassword" {
+  type = string
+}

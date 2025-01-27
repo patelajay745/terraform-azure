@@ -4,12 +4,15 @@ resource "azurerm_public_ip" "lb_public_ip" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku = "Standard"
+  zones               = ["1", "2", "3"]
+  domain_name_label   = "${var.appName}-${random_string.random.id}"
 }
 
 resource "azurerm_lb" "lb" {
   name                = "${var.appName}-lb"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
+  sku                 = "Standard"
 
   frontend_ip_configuration {
     name                 = "${var.appName}-lb-public-ip"
@@ -29,12 +32,16 @@ resource "azurerm_lb_rule" "lb_rule" {
   frontend_port                  = 80
   backend_port                   = 80
   frontend_ip_configuration_name = "${var.appName}-lb-public-ip"
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.backend_pool.id]
+   probe_id                       = azurerm_lb_probe.lb_probe.id
 }
 
 resource "azurerm_lb_probe" "lb_probe" {
   loadbalancer_id = azurerm_lb.lb.id
   name            = "app-running-probe"
+  protocol        = "Http"
   port            = 80
+  request_path    = "/"
 }
 
 resource "azurerm_lb_nat_rule" "nat_rule" {
